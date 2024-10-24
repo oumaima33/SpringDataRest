@@ -1,0 +1,4 @@
+2024-10-22 21:36:31.399049+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PROPRIETAVOITURE" non trouvée
+Table "PROPRIETAVOITURE" not found; SQL statement:
+SELECT * FROM PROPRIETAVOITURE PROPRIETAIRE VOITURE IRE ID [42102-224]
