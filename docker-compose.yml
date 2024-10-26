@@ -7,7 +7,17 @@ services:
       - "8080:8080"
     networks:
       - app-network
-
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: compagnie
+      MYSQL_USER: root
+      MYSQL_PASSWORD: admin
+    networks:
+      - monitoring
+    volumes:
+      - mariadb_data:/var/lib/mysql
   frontend:
     build:
       context: ./src/main/webapp/reactjs
@@ -29,7 +39,7 @@ services:
   grafana:
       image: grafana/grafana
       ports:
-        - "3000:3000"
+        - "3001:3001"
       networks:
         - monitoring
       environment:
@@ -42,3 +52,6 @@ networks:
     driver: bridge
   monitoring:
     driver: bridge
+volumes:
+      mariadb_data:
+        driver: local
