@@ -39,7 +39,7 @@ A web application built with Spring Boot for managing car listings. This applica
 
 ```bash
 git clone https://github.com/oumaima33/SpringDataRest.git
-cd recent-app
+cd SpringDataRestrecent-app
 ```
 
 ### Build the Application
