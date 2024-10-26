@@ -74,8 +74,9 @@ export default class VoitureListe extends Component {
                                         <td>{voiture.prix}</td>
                                         <td>
                                             <ButtonGroup>
-                                                <Link to={"edit/"+voiture.id} className="btn btn-sm btn-outline-primary">
-                                                    <FontAwesomeIcon icon={faEdit} />
+                                                <Link to={`/edit/${voiture.id}`} className="btn btn-sm btn-outline-primary">
+
+                                                <FontAwesomeIcon icon={faEdit} />
                                                 </Link>{' '}
 
                                                 <Button size="sm" variant="outline-danger"

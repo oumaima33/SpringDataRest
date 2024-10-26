@@ -15,7 +15,7 @@ class App extends Component {
 
         return (
             <Router>
-                <NavigationBar />
+                <NavigationBar/>
                 <Container>
                     <Row>
                         <Col lg={12} style={marginTop}>

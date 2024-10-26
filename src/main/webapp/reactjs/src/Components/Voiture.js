@@ -1,22 +1,22 @@
 import React from 'react';
-import { Card, Form, Button, Col, Row } from 'react-bootstrap'; // Import necessary components
+import { Card, Form, Button, Col, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faPlusSquare, faEdit } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-export default class Voiture extends React.Component {
+class Voiture extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = this.initialState;
-
         this.voitureChange = this.voitureChange.bind(this);
         this.submitVoiture = this.submitVoiture.bind(this);
         this.resetVoiture = this.resetVoiture.bind(this);
     }
 
-
     initialState = {
+        id: '',
         marque: '',
         modele: '',
         couleur: '',
@@ -25,11 +25,25 @@ export default class Voiture extends React.Component {
         annee: ''
     };
 
+    componentDidMount() {
+        const { id } = this.props.params;  // Récupère l'ID depuis les paramètres d'URL
+        if (id) {
+            // Récupération des données de la voiture si l'ID existe
+            axios.get(`http://localhost:8080/voitures/${id}`)
+                .then(response => {
+                    if (response.data) {
+                        this.setState({
+                            ...response.data
+                        });
+                    }
+                })
+                .catch(error => console.error("Erreur lors du chargement de la voiture :", error));
+        }
+    }
 
     resetVoiture = () => {
         this.setState(this.initialState);
     };
-
 
     submitVoiture = (event) => {
         event.preventDefault();
@@ -41,21 +55,27 @@ export default class Voiture extends React.Component {
             annee: this.state.annee,
             prix: this.state.prix
         };
-        console.log('Sending voiture data:', voiture);
 
-        axios.post("http://localhost:8080/voitures", voiture)
-            .then(response => {
-                if (response.data != null) {
-                    this.setState(this.initialState); // Reset form on success
-                    alert("Voiture enregistrée avec succès");
-                }
-            })
-            .catch(error => {
-                console.error("There was an error!", error); // Optional: handle errors
-                alert("Erreur lors de l'enregistrement de la voiture.");
-            });
+        const voitureId = this.state.id;
+        if (voitureId) {
+            axios.put(`http://localhost:8080/voitures/${voitureId}`, voiture)
+                .then(response => {
+                    if (response.data) {
+                        alert("Voiture mise à jour avec succès");
+                    }
+                })
+                .catch(error => console.error("Erreur de mise à jour de la voiture :", error));
+        } else {
+            axios.post("http://localhost:8080/voitures", voiture)
+                .then(response => {
+                    if (response.data) {
+                        this.setState(this.initialState);
+                        alert("Voiture enregistrée avec succès");
+                    }
+                })
+                .catch(error => console.error("Erreur lors de l'enregistrement de la voiture :", error));
+        }
     };
-
 
     voitureChange = (event) => {
         this.setState({
@@ -64,13 +84,12 @@ export default class Voiture extends React.Component {
     };
 
     render() {
-        // Destructure state for cleaner use in JSX
-        const { marque, modele, couleur, immatricule, annee, prix } = this.state;
+        const { marque, modele, couleur, immatricule, annee, prix, id } = this.state;
 
         return (
             <Card className={"border border-dark bg-dark text-white"}>
                 <Card.Header>
-                    <FontAwesomeIcon icon={faPlusSquare} /> Ajouter une Voiture
+                    <FontAwesomeIcon icon={id ? faEdit : faPlusSquare} /> {id ? "Éditer" : "Ajouter"} une Voiture
                 </Card.Header>
                 <Form onReset={this.resetVoiture} onSubmit={this.submitVoiture} id="VoitureFormId">
                     <Card.Body>
@@ -82,7 +101,7 @@ export default class Voiture extends React.Component {
                                     type="text"
                                     className={"bg-dark text-white"}
                                     placeholder="Entrez Marque Voiture"
-                                    value={marque}
+                                    value={marque || ''}
                                     autoComplete="off"
                                     onChange={this.voitureChange}
                                 />
@@ -94,7 +113,7 @@ export default class Voiture extends React.Component {
                                     type="text"
                                     className={"bg-dark text-white"}
                                     placeholder="Entrez Modèle Voiture"
-                                    value={modele}
+                                    value={modele || ''}
                                     autoComplete="off"
                                     onChange={this.voitureChange}
                                 />
@@ -110,7 +129,7 @@ export default class Voiture extends React.Component {
                                     type="text"
                                     className={"bg-dark text-white"}
                                     placeholder="Entrez Couleur Voiture"
-                                    value={couleur}
+                                    value={couleur || ''}
                                     autoComplete="off"
                                     onChange={this.voitureChange}
                                 />
@@ -123,7 +142,7 @@ export default class Voiture extends React.Component {
                                     type="text"
                                     className={"bg-dark text-white"}
                                     placeholder="Entrez Immatricule Voiture"
-                                    value={immatricule}
+                                    value={immatricule || ''}
                                     autoComplete="off"
                                     onChange={this.voitureChange}
                                 />
@@ -139,7 +158,7 @@ export default class Voiture extends React.Component {
                                     type="number"
                                     className={"bg-dark text-white"}
                                     placeholder="Entrez Année Voiture"
-                                    value={annee}
+                                    value={annee || ''}
                                     autoComplete="off"
                                     onChange={this.voitureChange}
                                 />
@@ -152,7 +171,7 @@ export default class Voiture extends React.Component {
                                     type="number"
                                     className={"bg-dark text-white"}
                                     placeholder="Entrez Prix Voiture"
-                                    value={prix}
+                                    value={prix || ''}
                                     autoComplete="off"
                                     onChange={this.voitureChange}
                                 />
@@ -161,14 +180,19 @@ export default class Voiture extends React.Component {
                     </Card.Body>
                     <Card.Footer style={{ textAlign: "right" }}>
                         <Button size="sm" variant="success" type="submit">
-                            <FontAwesomeIcon icon={faSave} /> Submit
+                            <FontAwesomeIcon icon={faSave} /> {id ? "Mettre à jour" : "Enregistrer"}
                         </Button>{' '}
                         <Button size="sm" variant="info" type="reset">
-                            <FontAwesomeIcon icon={faUndo} /> Reset
+                            <FontAwesomeIcon icon={faUndo} /> Réinitialiser
                         </Button>
                     </Card.Footer>
                 </Form>
             </Card>
         );
     }
+}
+
+export default function VoitureWrapper(props) {
+    const params = useParams();
+    return <Voiture {...props} params={params} />;
 }

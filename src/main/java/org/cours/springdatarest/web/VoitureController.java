@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins="http://localhost:3001")
+@CrossOrigin(origins="http://localhost:3000")
 public class VoitureController {
 
     @Autowired
@@ -38,4 +38,9 @@ public class VoitureController {
 
         return voitureRepo.save(existingVoiture);  // Save the updated car
     }
+    @GetMapping("/voitures/{id}")
+    public Voiture getVoiture(@PathVariable Long id) {
+        return voitureRepo.findById(id).orElseThrow(() -> new RuntimeException("Voiture not found"));
+    }
+
 }

@@ -1,0 +1,44 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile         # Assuming the backend Dockerfile is in the root
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./src/main/webapp/reactjs
+      dockerfile: Dockerfile         # This is for the React frontend Dockerfile in `webapp/reactjs`
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+      image: grafana/grafana
+      ports:
+        - "3000:3000"
+      networks:
+        - monitoring
+      environment:
+        - GF_SECURITY_ADMIN_PASSWORD=admin # Change to a secure password
+
+
+
+networks:
+  app-network:
+    driver: bridge
+  monitoring:
+    driver: bridge
