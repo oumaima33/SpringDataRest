@@ -1,5 +1,5 @@
 
-# Recent App
+# Spring/react App
 
 ## Overview
 A web application built with Spring Boot for managing car listings. This application allows users to view, add, edit, and delete cars seamlessly. It features a user-friendly interface and incorporates best practices in software development.
