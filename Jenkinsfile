@@ -56,13 +56,13 @@ pipeline {
                     steps {
                         script {
                             // Login and push the image to a Docker registry (e.g., Docker Hub)
-                            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                                 bat 'docker login -u %USERNAME% -p %PASSWORD%'
-                                bat 'docker tag springdatarest:latest YOUR_DOCKER_USERNAME/springdatarest:latest'
-                                bat 'docker push YOUR_DOCKER_USERNAME/springdatarest:latest'
+                                bat 'docker tag springdatarest:latest oum0033/springdatarest:latest'
+                                bat 'docker push oum0033/springdatarest:latest'
                             }
                         }
                     }
                 }
-            }
+
         }
