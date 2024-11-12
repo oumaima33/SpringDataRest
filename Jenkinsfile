@@ -30,7 +30,7 @@ pipeline {
                         def buildTag = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
                         def latestTag = "${DOCKER_IMAGE_NAME}:latest"
                         
-                        bat "docker build -t ${DOCKER_IMAGE_NAME} -f Dockerfile.final ."
+                        bat "docker build -t ${DOCKER_IMAGE_NAME} -f Dockerfile ."
                         bat "docker tag ${DOCKER_IMAGE_NAME} oum0033/${buildTag}"
                         bat "docker tag ${DOCKER_IMAGE_NAME} oum0033/${latestTag}"
                         bat "docker push oum0033/${buildTag}"
