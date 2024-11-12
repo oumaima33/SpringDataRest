@@ -4,7 +4,7 @@ pipeline {
     tools {
         maven 'Maven_Local' // Ensure the name is correct
     }
-
+    
     stages {
         stage('Checkout') {
             steps {
@@ -20,6 +20,7 @@ pipeline {
                 }
             }
         }
+       
 
         stage('SonarQube Analysis') {
             steps {
