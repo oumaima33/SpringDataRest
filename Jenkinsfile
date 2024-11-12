@@ -4,7 +4,7 @@ pipeline {
     tools {
         maven 'Maven_Local' // Ensure the name is correct
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
@@ -20,7 +20,6 @@ pipeline {
                 }
             }
         }
-       
 
         stage('SonarQube Analysis') {
             steps {
@@ -40,30 +39,28 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
-                    steps {
-                        script {
-                            // Build the Docker image
-                            bat 'docker build -t springdatarest:latest .'
-                        }
-                    }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') { // Increase if needed
+                    waitForQualityGate abortPipeline: true
                 }
-
-                stage('Docker Push') {
-                    when {
-                        expression { env.BRANCH_NAME == 'master' } // Push only on the master branch
-                    }
-                    steps {
-                        script {
-                            // Login and push the image to a Docker registry (e.g., Docker Hub)
-                            withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                bat 'docker login -u %USERNAME% -p %PASSWORD%'
-                                bat 'docker tag springdatarest:latest oum0033/springdatarest:latest'
-                                bat 'docker push oum0033/springdatarest:latest'
-                            }
-                        }
-                    }
-                }
-
+            }
         }
- }
+    }
+   stage('Docker Build and Push') {
+       when {
+           expression { env.BRANCH_NAME == 'master' } // Only push on the master branch
+       }
+       steps {
+           script {
+               withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                   bat 'docker login -u %USERNAME% -p %PASSWORD%' // Log into Docker Hub
+                   bat 'docker build -t springdatarest:latest .' // Build the Docker image
+                   bat 'docker tag springdatarest:latest oum0033/springdatarest:latest' // Tag the Docker image
+                   bat 'docker push oum0033/springdatarest:latest' // Push to Docker Hub
+               }
+           }
+       }
+   }
+
+}
