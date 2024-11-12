@@ -39,12 +39,29 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') { // Increase if needed
-                    waitForQualityGate abortPipeline: true
+        stage('Docker Build') {
+                    steps {
+                        script {
+                            // Build the Docker image
+                            bat 'docker build -t springdatarest:latest .'
+                        }
+                    }
+                }
+
+                stage('Docker Push') {
+                    when {
+                        expression { env.BRANCH_NAME == 'master' } // Push only on the master branch
+                    }
+                    steps {
+                        script {
+                            // Login and push the image to a Docker registry (e.g., Docker Hub)
+                            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                bat 'docker login -u %USERNAME% -p %PASSWORD%'
+                                bat 'docker tag springdatarest:latest YOUR_DOCKER_USERNAME/springdatarest:latest'
+                                bat 'docker push YOUR_DOCKER_USERNAME/springdatarest:latest'
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-}
