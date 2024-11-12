@@ -1,6 +1,9 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven_Local' // Le nom que vous avez défini dans la configuration Jenkins
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -9,11 +12,15 @@ pipeline {
         }
 
         stage('Compile') {
-            steps {
-                // Assurez-vous que Maven est installé et configuré dans Jenkins
-                bat 'mvn clean compile'
-            }
-        }
+                    steps {
+                        // Appel de Maven avec le chemin local configuré
+                        script {
+                            def mvnHome = tool 'Maven_Local' // Remplacez par le nom configuré pour Maven
+                            bat "${mvnHome}\\bin\\mvn clean compile"
+                        }
+                    }
+                }
+
 
         stage('SonarQube Analysis') {
             steps {
