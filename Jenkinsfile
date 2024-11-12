@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/oumaima33/paincare-app.git', branch: 'main'
+                git url: 'https://github.com/oumaima33/SpringDataRest.git', branch: 'master'
             }
         }
 
@@ -22,9 +22,9 @@ pipeline {
                     withSonarQubeEnv('SonarQube') {
                         bat """
                             ${scannerHome}\\bin\\sonar-scanner.bat ^
-                            -Dsonar.projectKey=Angular ^
+                            -Dsonar.projectKey=spring_sonar ^
                             -Dsonar.host.url=http://localhost:9000 ^
-                            -Dsonar.login=sqp_4ab5652a1dadf95467bce929bf380feb90a6bbbc ^
+                            -Dsonar.login=sqp_c390a9a69a45da1ac38e9f19b882da3093d93b44 ^
                             -Dsonar.sources=./src ^
                             -Dsonar.java.binaries=./target/classes
                         """
