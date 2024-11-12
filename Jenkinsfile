@@ -4,6 +4,9 @@ pipeline {
     tools {
         maven 'Maven_Local' // Ensure the name is correct
     }
+    environment {
+        DOCKER_IMAGE_NAME = 'spring-boot'
+    }
 
     stages {
         stage('Checkout') {
