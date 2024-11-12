@@ -48,15 +48,16 @@ pipeline {
         }
 
         stage('Docker Build and Push') {
-             steps {
-                 script {
-                     withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                         bat 'docker login -u %USERNAME% -p %PASSWORD%' // Log into Docker Hub
-                         bat 'docker build -t springdatarest:latest .' // Build the Docker image
-                         bat 'docker tag springdatarest:latest oum0033/springdatarest:latest' // Tag the Docker image
-                         bat 'docker push oum0033/springdatarest:latest' // Push to Docker Hub
-                     }
-                 }
-             }
-         }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        bat 'docker login -u %USERNAME% -p %PASSWORD%' // Log into Docker Hub
+                        bat 'docker build -t springdatarest:latest .' // Build the Docker image
+                        bat 'docker tag springdatarest:latest oum0033/springdatarest:latest' // Tag the Docker image
+                        bat 'docker push oum0033/springdatarest:latest' // Push to Docker Hub
+                    }
+                }
+            }
+        }
     }
+}
