@@ -46,7 +46,7 @@ pipeline {
                 }
             }
         }
-    }
+
    stage('Docker Build and Push') {
        when {
            expression { env.BRANCH_NAME == 'master' } // Only push on the master branch
