@@ -29,7 +29,7 @@ pipeline {
                         bat """
                             "${scannerHome}\\bin\\sonar-scanner.bat" ^
                             -Dsonar.projectKey=spring_sonar ^
-                            -Dsonar.host.url=http://localhost:9000 ^
+                            -Dsonar.host.url=https://08a3-105-73-96-62.ngrok-free.app ^
                             -Dsonar.login=sqp_87e73499757d28c6c0a6e6321a52d591e7b166db ^
                             -Dsonar.sources=./src ^
                             -Dsonar.java.binaries=./target/classes
@@ -39,5 +39,12 @@ pipeline {
             }
         }
 
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') { // Increase if needed
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
     }
 }
