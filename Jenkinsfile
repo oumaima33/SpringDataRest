@@ -4,10 +4,7 @@ pipeline {
     tools {
         maven 'Maven_Local' // Ensure the name is correct
     }
-    environment {
-        DOCKER_IMAGE_NAME = 'spring-boot'
-    }
-
+    
     stages {
         stage('Checkout') {
             steps {
@@ -23,23 +20,7 @@ pipeline {
                 }
             }
         }
-        stage('Docker Build & Push') {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
-                        def buildTag = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
-                        def latestTag = "${DOCKER_IMAGE_NAME}:latest"
-                        
-                        bat "docker build -t ${DOCKER_IMAGE_NAME} -f Dockerfile ."
-                        bat "docker tag ${DOCKER_IMAGE_NAME} oum0033/${buildTag}"
-                        bat "docker tag ${DOCKER_IMAGE_NAME} oum0033/${latestTag}"
-                        bat "docker push oum0033/${buildTag}"
-                        bat "docker push oum0033/${latestTag}"
-                        env.BUILD_TAG = buildTag
-                    }
-                }
-            }
-        }
+       
 
         stage('SonarQube Analysis') {
             steps {
